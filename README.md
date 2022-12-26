@@ -1,7 +1,11 @@
 # Pokemon Damage API
 
 
-### Starting off
+## Starting off
+
+### Note:
+  * This calculator only has data until Pokemon Generate 8.
+  * To update this the 2 files in the `pokemon-damage-api/sql/data` dir will need to be updated
 
 * You can build the image using the compose file
   - ```docker-compose build```
