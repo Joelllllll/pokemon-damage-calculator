@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+    db:
+        image: postgres:14.1-alpine
+        restart: always
+        ports:
+          - '5432:5432'
+        volumes: 
+          - ./postgres-data:/var/lib/postgresql/data
+          - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+          - ./sql/data/:/docker-entrypoint-initdb.d/data/
+    api:
+        environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+          - POSTGRES_PORT=5432
+          - POSTGRES_DB=postgres
+          - POSTGRES_HOST=db
+        build: .
+        volumes:
+          - .:/code
+        ports:
+          - '8000:8000'
+        links:
+          - db
+        command: uvicorn app.main:app --host 0.0.0.0
