@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 import sys
 
@@ -17,8 +17,8 @@ CLIENT = DB()
 ## Probably move these dataclasses to a battle.py model?
 @dataclass
 class Stats:
-    evs: dict
-    ivs: dict
+    evs: dict = field(default_factory=dict)
+    ivs: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -28,7 +28,7 @@ class PokemonBattle:
 
 
 @app.get("/pokemon/{pokemon_name}")
-def get_pokemon(pokemon_name: str, data: Stats = None):
+def get_pokemon(pokemon_name: str, data: Stats = Stats()):
     # EVs and Ivs default to 0 when no supplied
     result = PokemonStats(
         pokemon_name=pokemon_name, evs=EVs(**data.evs), ivs=IVs(**data.ivs)

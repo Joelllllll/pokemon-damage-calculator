@@ -1,16 +1,29 @@
 import os
 import sys
+from dataclasses import dataclass
 
 from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from app.main import app
+from app.db.models.pokemon import Pokemon, EVs, IVs, PokemonStats
+
 
 # easy testing https://fastapi.tiangolo.com/tutorial/testing/
 client = TestClient(app)
 
-PIKACHU = {
+
+@dataclass
+class TestPayload:
+    pokemon: Pokemon
+    evs: EVs
+    ivs: IVs
+    level: int = 100
+    move_name: str = None
+
+
+PIKACHU = TestPayload(**{
     "pokemon": {
         "total": 320,
         "pokemon_number": 25,
@@ -44,16 +57,16 @@ PIKACHU = {
     },
     "level": 100,
     "move_name": None,
-}
+})
 
 
 class TestAPI:
     def test_get_pokemon(self):
         res = client.get(
-            f"/pokemon/pikachu", json={"evs": {"hp": 100}, "ivs": {"attack": 31}}
+            f"/pokemon/pikachu", json={"evs": PIKACHU.evs, "ivs": PIKACHU.ivs}
         )
         assert res.status_code == 200
-        assert res.json() == PIKACHU
+        assert res.json() == PIKACHU.__dict__
 
     def test_battle(self):
         res = client.post(

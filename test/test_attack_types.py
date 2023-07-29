@@ -6,40 +6,67 @@ from app.db.models.attack_types import *
 
 
 class TestAttackTypes:
-    def test_resistances(self):
-        assert Water.resists(Fire)
-        assert Fire.resists(Bug)
-        assert Ice.resists(Ice)
-        assert Dragon.resists(Grass)
-        assert Fire.resists(Fairy)
-        assert Steel.resists(Psychic)
-        assert not Normal.resists(Fighting)
+    def test_resistances_2(self):
+        # ChatGPT generated all type interactions seen in this file, it has probably missed some
+        type_resistances = [
+            (Fire, Bug), (Fire, Steel), (Fire, Fairy),
+            (Water, Fire), (Water, Water), (Water, Ice), (Water, Steel),
+            (Electric, Electric), (Electric, Flying), (Electric, Steel),
+            (Grass, Water), (Grass, Electric), (Grass, Grass), (Grass, Ground),
+            (Ice, Ice),
+            (Fighting, Bug), (Fighting, Rock), (Fighting, Dark),
+            (Poison, Grass), (Poison, Fairy), (Poison, Poison),
+            (Ground, Poison), (Ground, Rock),
+            (Flying, Grass), (Flying, Fighting), (Flying, Bug),
+            (Psychic, Fighting), (Psychic, Psychic),
+            (Bug, Grass), (Bug, Fighting), (Bug, Ground),
+            (Rock, Normal), (Rock, Fire), (Rock, Poison), (Rock, Flying),
+            (Ghost, Poison), (Ghost, Bug),
+            (Dragon, Electric), (Dragon, Water), (Dragon, Grass), (Dragon, Fire),
+            (Dark, Ghost), (Dark, Dark),
+            (Steel, Normal), (Steel, Grass), (Steel, Ice), (Steel, Flying),
+            (Steel, Psychic), (Steel, Bug), (Steel, Dragon), (Steel, Steel), (Steel, Fairy),
+            (Fairy, Fighting), (Fairy, Bug), (Fairy, Dark)
+        ]
+        for type1, type2 in type_resistances:
+            assert type1.resists(type2)
 
-    def test_weakness(self):
-        assert Water.weak_against(Grass)
-        assert Fire.weak_against(Ground)
-        assert Electric.weak_against(Ground)
-        assert Ice.weak_against(Steel)
-        assert Dragon.weak_against(Dragon)
-        assert Ghost.weak_against(Dark)
-        assert Dark.weak_against(Bug)
-        assert not Normal.weak_against(Dark)
 
-    def test_strengths(self):
-        assert Fire.strong_against(Grass)
-        assert Grass.strong_against(Water)
-        assert Electric.strong_against(Flying)
-        assert Psychic.strong_against(Fighting)
-        assert Fighting.strong_against(Dark)
-        assert Fairy.strong_against(Dragon)
-        assert Steel.strong_against(Fairy)
-        assert not Ground.strong_against(Grass)
+    def test_weakness_2(self):
+        weaknesses = [
+            (Water, Grass), (Water, Electric),
+            (Fire, Water), (Fire, Rock), (Fire, Ground),
+            (Grass, Bug), (Grass, Fire), (Grass, Ice),
+            (Electric, Ground),
+            (Ice, Fighting), (Ice, Fire), (Ice, Rock), (Ice, Steel),
+            (Fighting, Flying), (Fighting, Psychic), (Fighting, Fairy),
+            (Poison, Ground), (Poison, Psychic),
+            (Ground, Water), (Ground, Ice),
+            (Flying, Electric), (Flying, Ice), (Flying, Rock),
+            (Psychic, Bug), (Psychic, Ghost), (Psychic, Dark),
+            (Bug, Fire), (Bug, Flying), (Bug, Rock),
+            (Rock, Water), (Rock, Grass), (Rock, Fighting),
+            (Ghost, Ghost), (Ghost, Dark),
+            (Dragon, Ice), (Dragon, Fairy), (Dragon, Dragon),
+            (Dark, Fighting), (Dark, Bug),
+            (Steel, Fighting), (Steel, Ground), (Steel, Fire),
+            (Fairy, Poison), (Fairy, Steel),
+        ]
 
-    def test_immunity(self):
-        assert Ghost.immune_to(Normal)
-        assert Normal.immune_to(Ghost)
-        assert Steel.immune_to(Poison)
-        assert Flying.immune_to(Ground)
-        assert Ground.immune_to(Electric)
-        assert Fairy.immune_to(Dragon)
-        assert not Ghost.immune_to(Dark)
+        for type1, type2 in weaknesses:
+            assert type1.weak_against(type2)
+
+    def test_immunities(self):
+        immunities = [
+            (Ghost, Normal),
+            (Normal, Ghost),
+            (Steel, Poison),
+            (Flying, Ground),
+            (Ground, Electric),
+            (Normal, Ghost),
+            (Dark, Psychic),
+            (Fairy, Dragon),
+        ]
+
+        for type1, type2 in immunities:
+            assert type1.immune_to(type2)

@@ -9,18 +9,16 @@ services:
           - ./postgres-data:/var/lib/postgresql/data
           - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
           - ./sql/data/:/docker-entrypoint-initdb.d/data/
+        env_file:
+          - 'variables.env'
     api:
-        environment:
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-          - POSTGRES_PORT=5432
-          - POSTGRES_DB=postgres
-          - POSTGRES_HOST=db
         build: .
         volumes:
           - .:/code
         ports:
           - '8000:8000'
+        env_file:
+          - 'variables.env'
         links:
           - db
         command: uvicorn app.main:app --host 0.0.0.0

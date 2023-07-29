@@ -83,4 +83,4 @@ r.json() #/ returns
 
 ```
 ### Running Tests
-* ```docker-compose run -e RAILS_ENV=test api bash -c 'pytest'```
+* ```docker-compose run api bash -c 'pytest'```

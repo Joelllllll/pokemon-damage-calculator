@@ -1,7 +1,5 @@
 from __future__ import annotations # allows type hinting in method of enclosing class
 
-
-
 class AttackType:
     @classmethod
     def strength(cls):
@@ -27,10 +25,6 @@ class AttackType:
     @classmethod
     def weak_against(cls, attack_type: AttackType) -> bool:
         return attack_type in cls.weakness()
-
-    @classmethod
-    def strong_against(cls, attack_type: AttackType) -> bool:
-        return attack_type in cls.strength()
 
     @classmethod
     def immune_to(cls, attack_type: AttackType) -> bool:
@@ -292,7 +286,7 @@ class Steel(AttackType):
 
     @classmethod
     def resistances(cls):
-        return [Bug, Dragon, Flying, Grass, Ice, Psychic, Rock, Steel, Normal]
+        return [Bug, Dragon, Flying, Grass, Ice, Psychic, Rock, Steel, Normal, Fairy]
 
     @classmethod
     def weakness(cls):
