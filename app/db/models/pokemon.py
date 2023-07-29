@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, field
 from sqlalchemy import Column, String, Integer, Boolean, func
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -35,6 +35,11 @@ class Pokemon(base):
                 func.lower(cls.pokemon_name) == func.lower(pokemon_name)
             )
         )
+
+@dataclass
+class StatsPayload:
+    evs: dict = field(default_factory=dict)
+    ivs: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -99,12 +104,6 @@ class IVs(BaseStats):
     @property
     def max_value(self):
         return 31
-
-
-# we also need an object to hold a pokemon post database.
-# we need a model that will also include EVs and IVs of a pokemon
-
-class PokemonLevelError(Exception): pass
 
 @dataclass
 class PokemonStats:

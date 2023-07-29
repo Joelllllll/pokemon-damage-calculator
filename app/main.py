@@ -1,33 +1,20 @@
-from dataclasses import dataclass, field
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from app.db.models.pokemon import EVs, IVs, PokemonStats
+from app.db.models.pokemon import EVs, IVs, PokemonStats, StatsPayload
 from app.db.db import DB
-from app.db.models.battle import Battle
+from app.db.models.battle import Battle, PokemonBattlePayload
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 
 app = FastAPI()
 CLIENT = DB()
 
 
-## Probably move these dataclasses to a battle.py model?
-@dataclass
-class Stats:
-    evs: dict = field(default_factory=dict)
-    ivs: dict = field(default_factory=dict)
-
-
-@dataclass
-class PokemonBattle:
-    attacking: PokemonStats
-    defending: PokemonStats
-
 @app.get("/pokemon/{pokemon_name}")
-def get_pokemon(pokemon_name: str, data: Stats = Stats()):
+def get_pokemon(pokemon_name: str, data: StatsPayload = StatsPayload()):
     # EVs and Ivs default to 0 when no supplied
     result = PokemonStats(
         pokemon_name=pokemon_name, evs=EVs(**data.evs), ivs=IVs(**data.ivs)
@@ -35,7 +22,7 @@ def get_pokemon(pokemon_name: str, data: Stats = Stats()):
     return result.to_dict()
 
 @app.post("/battle")
-def battle(data: PokemonBattle):
+def battle(data: PokemonBattlePayload):
     att_pokemon = PokemonStats(
         pokemon_name=data.attacking.pokemon_name,
         evs=EVs(**data.attacking.evs.__dict__),

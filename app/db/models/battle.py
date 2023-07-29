@@ -9,6 +9,11 @@ from fastapi import HTTPException
 
 
 @dataclass
+class PokemonBattlePayload:
+    attacking: PokemonStats
+    defending: PokemonStats
+
+@dataclass
 class Damage:
     min: int
     max: int
