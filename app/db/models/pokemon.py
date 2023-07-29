@@ -109,6 +109,7 @@ class IVs(BaseStats):
 # we also need an object to hold a pokemon post database.
 # we need a model that will also include EVs and IVs of a pokemon
 
+class PokemonLevelError(Exception): pass
 
 @dataclass
 class PokemonStats:

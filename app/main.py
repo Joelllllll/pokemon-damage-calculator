@@ -4,11 +4,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from app.db.models.pokemon import Pokemon, EVs, IVs, PokemonStats
+from app.db.models.pokemon import EVs, IVs, PokemonStats
 from app.db.db import DB
 from app.db.models.battle import Battle
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 CLIENT = DB()
@@ -26,7 +26,6 @@ class PokemonBattle:
     attacking: PokemonStats
     defending: PokemonStats
 
-
 @app.get("/pokemon/{pokemon_name}")
 def get_pokemon(pokemon_name: str, data: Stats = Stats()):
     # EVs and Ivs default to 0 when no supplied
@@ -35,10 +34,13 @@ def get_pokemon(pokemon_name: str, data: Stats = Stats()):
     )
     return result.to_dict()
 
-
 @app.post("/battle")
 def battle(data: PokemonBattle):
-    # build up the att and def pokemon objects
+    level_range = range(1, 101)
+    if data.attacking.level not in level_range or data.defending.level not in level_range:
+        raise HTTPException(
+            status_code=400, detail="Pokemon level must be between 1 and 100"
+        )
     att_pokemon = PokemonStats(
         pokemon_name=data.attacking.pokemon_name,
         evs=EVs(**data.attacking.evs.__dict__),
