@@ -36,11 +36,6 @@ def get_pokemon(pokemon_name: str, data: Stats = Stats()):
 
 @app.post("/battle")
 def battle(data: PokemonBattle):
-    level_range = range(1, 101)
-    if data.attacking.level not in level_range or data.defending.level not in level_range:
-        raise HTTPException(
-            status_code=400, detail="Pokemon level must be between 1 and 100"
-        )
     att_pokemon = PokemonStats(
         pokemon_name=data.attacking.pokemon_name,
         evs=EVs(**data.attacking.evs.__dict__),

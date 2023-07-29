@@ -10,6 +10,8 @@ from app.db.models import pokemon
 from test.test_main import PIKACHU
 from app.db.models.moves import Moves
 
+from fastapi import HTTPException
+
 
 CLIENT = DB().session
 
@@ -27,7 +29,7 @@ class TestPokemon:
         }
 
     def test_ev_model_error(self):
-        with pytest.raises(pokemon.BaseStats.StatsValidationError):
+        with pytest.raises(HTTPException):
             # max allowed value is 0 - 252
             pokemon.EVs(hp=1000)
 
@@ -43,7 +45,7 @@ class TestPokemon:
         }
 
     def test_iv_model_error(self):
-        with pytest.raises(pokemon.BaseStats.StatsValidationError):
+        with pytest.raises(HTTPException):
             # max allowed value is 0 - 31
             pokemon.IVs(hp=40)
 
@@ -133,7 +135,7 @@ class TestPokemonStats:
         }
 
     def test_max_ev_values_error(self):
-        with pytest.raises(pokemon.BaseStats.StatsValidationError):
+        with pytest.raises(HTTPException):
             pokemon.EVs(hp=100, attack=253)
 
     def test_max_iv_values(self):
@@ -149,5 +151,5 @@ class TestPokemonStats:
         }
 
     def test_max_iv_values_error(self):
-        with pytest.raises(pokemon.BaseStats.StatsValidationError):
+        with pytest.raises(HTTPException):
             pokemon.IVs(hp=32, attack=21)

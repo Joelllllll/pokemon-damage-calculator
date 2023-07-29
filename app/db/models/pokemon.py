@@ -5,6 +5,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from app.db.db import QueryResult, DB
 from app.db.models.moves import Moves
 
+from fastapi import HTTPException
+
 base = declarative_base()
 
 
@@ -44,9 +46,6 @@ class BaseStats:
     special_defense: int = 0
     speed: int = 0
 
-    class StatsValidationError(Exception):
-        pass
-
     def __post_init__(self):
         self.validate()
 
@@ -70,13 +69,9 @@ class BaseStats:
             if self.min_value <= val <= self.max_value:
                 next
             else:
-                raise self.StatsValidationError(
-                    f"Value: {val} for field: {field.name} is invalid"
-                )
+                raise HTTPException(status_code=400, detail=f"Value: {val} for field: {field.name} is invalid")
         if stat_total > self.max_total_value:
-            raise self.StatsValidationError(
-                f"Stats total {stat_total} is larger than the max allowed total {self.max_total_value}"
-            )
+            raise HTTPException(status_code=400, detail=f"Stats total {stat_total} is larger than the max allowed total {self.max_total_value}")
 
 
 @dataclass
@@ -131,10 +126,7 @@ class PokemonStats:
         }
 
     def __post_init__(self):
-        if self.move_name:
-            self.move = Moves.select_by_name(DB().session, self.move_name).first
-        if self.pokemon_name:
-            self.pokemon = Pokemon.select_by_name(DB().session, self.pokemon_name)
+        self.validate()
 
     @property
     def hp(self):
@@ -187,3 +179,15 @@ class PokemonStats:
             + self.ivs.speed
             + (self.evs.speed / 4) * self.level / 100
         ) + 5
+
+    def validate(self):
+        if self.move_name:
+            self.move = Moves.select_by_name(DB().session, self.move_name).first
+            if not self.move:
+                raise HTTPException(status_code=400, detail=f"Move not found in database: '{self.move_name}'")
+        if self.pokemon_name:
+            self.pokemon = Pokemon.select_by_name(DB().session, self.pokemon_name)
+            if not self.pokemon.first:
+                raise HTTPException(status_code=400, detail=f"Pokemon not found in database: '{self.pokemon_name}'")
+        if self.level not in range(1,101):
+            raise HTTPException(status_code=400, detail="Pokemon level must be between 1 and 100")

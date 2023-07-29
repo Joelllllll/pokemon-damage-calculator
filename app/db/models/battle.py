@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from app.db.models.pokemon import PokemonStats
 from app.db.models.attack_types import TYPE_MAPPING
 
+from fastapi import HTTPException
+
 
 @dataclass
 class Damage:
@@ -31,8 +33,16 @@ class Battle:
     SPECIAL_ATTACK = "Special"
 
     def __post_init__(self):
+        self.validate()
         self.check_stab()
         self.type_effectiveness_factor()
+
+    def validate(self):
+        "Validate the move name and pokemon name"
+        if not self.attacking.move_name:
+            raise HTTPException(status_code=400, detail=f"Move not found: '{self.attacking.move.name}'")
+        if not self.attacking.pokemon_name:
+            raise HTTPException(status_code=400, detail=f"Pokemon not found: '{self.attacking.pokemon.name}'")
 
     # Damage formulas used were copied from here, idk how the pokemon devs came up with it
     # https://bulbapedia.bulbagarden.net/wiki/Damage#Generation_V_onward
