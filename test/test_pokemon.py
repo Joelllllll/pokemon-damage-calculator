@@ -153,3 +153,35 @@ class TestPokemonStats:
     def test_max_iv_values_error(self):
         with pytest.raises(HTTPException):
             pokemon.IVs(hp=32, attack=21)
+
+    def test_pokemon_not_found(self):
+        with pytest.raises(HTTPException) as e:
+            pokemon.PokemonStats(
+            "Pachu", pokemon.EVs(speed=200), pokemon.IVs(speed=31), 100, "Pound"
+        )
+        assert e.value.detail == "Pokemon not found in database: 'Pachu'"
+        assert e.value.status_code == 400
+
+    def test_move_not_found(self):
+        with pytest.raises(HTTPException) as e:
+            pokemon.PokemonStats(
+            "Pikachu", pokemon.EVs(speed=200), pokemon.IVs(speed=31), 100, "Pound77"
+        )
+        assert e.value.detail == "Move not found in database: 'Pound77'"
+        assert e.value.status_code == 400
+
+    def test_level_upper_bounds(self):
+        with pytest.raises(HTTPException) as e:
+            pokemon.PokemonStats(
+            "Pikachu", pokemon.EVs(speed=200), pokemon.IVs(speed=31), 200, "Pound"
+        )
+        assert e.value.detail == "Pokemon level must be between 1 and 100"
+        assert e.value.status_code == 400
+
+    def test_level_lower_bounds(self):
+        with pytest.raises(HTTPException) as e:
+            pokemon.PokemonStats(
+            "Pikachu", pokemon.EVs(speed=200), pokemon.IVs(speed=31), -1, "Pound"
+        )
+        assert e.value.detail == "Pokemon level must be between 1 and 100"
+        assert e.value.status_code == 400
