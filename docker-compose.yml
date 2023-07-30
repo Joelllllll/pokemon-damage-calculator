@@ -6,11 +6,11 @@ services:
         ports:
           - '5432:5432'
         volumes: 
-          - ./postgres-data:/var/lib/postgresql/data
+          - .postgres-data:/var/lib/postgresql/data/
           - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
           - ./sql/data/:/docker-entrypoint-initdb.d/data/
         env_file:
-          - 'variables.env'
+          - 'app-pokemon-damage-calculator/variables.env'
     api:
         build: .
         volumes:
@@ -18,7 +18,7 @@ services:
         ports:
           - '8000:8000'
         env_file:
-          - 'variables.env'
+          - 'app-pokemon-damage-calculator/variables.env'
         links:
           - db
-        command: uvicorn app.main:app --host 0.0.0.0
+        command: uvicorn app-pokemon-damage-calculator.app.main:app --host 0.0.0.0

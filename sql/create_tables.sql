@@ -35,3 +35,4 @@ COPY pokemon_moves
 FROM '/docker-entrypoint-initdb.d/data/pokemon-moves.csv'
 DELIMITER ','
 CSV HEADER;
+
