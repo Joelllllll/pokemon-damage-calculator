@@ -36,6 +36,14 @@ class Pokemon(base):
             )
         )
 
+    @classmethod
+    def all_names(cls, client):
+        return [i[0] for i in client.query(cls.pokemon_name).all()]
+
+    @classmethod
+    def all(cls, client):
+        return [i.__dict__ for i in client.query(cls).all()]
+
 @dataclass
 class StatsPayload:
     evs: dict = field(default_factory=dict)
@@ -96,6 +104,12 @@ class EVs(BaseStats):
 @dataclass
 class IVs(BaseStats):
     # all ivs can have values between 0 - 31
+    hp: int = 31
+    attack: int = 31
+    defense: int = 31
+    special_attack: int = 31
+    special_defense: int = 31
+    speed: int = 31
 
     @property
     def max_total_value(self):

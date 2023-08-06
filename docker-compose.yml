@@ -12,7 +12,7 @@ services:
         env_file:
           - 'app-pokemon-damage-calculator/variables.env'
     api:
-        build: .
+        build: app-pokemon-damage-calculator/
         volumes:
           - .:/code
         ports:
@@ -22,3 +22,13 @@ services:
         links:
           - db
         command: uvicorn app-pokemon-damage-calculator.app.main:app --host 0.0.0.0
+
+    frontend:
+        build: web-pokemon-damage-calculator/
+        volumes:
+          - .:/code
+        ports:
+          - '3000:3000'
+        links:
+          - api
+        command: npm start

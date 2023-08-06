@@ -27,3 +27,7 @@ class Moves(base):
         return QueryResult(
             client.query(cls).where(func.lower(cls.move_name) == func.lower(move_name))
         )
+
+    @classmethod
+    def all_names(cls, client):
+        return [i[0] for i in client.query(cls.move_name).all()]

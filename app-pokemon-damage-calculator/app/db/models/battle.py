@@ -53,6 +53,7 @@ class Battle:
     # https://bulbapedia.bulbagarden.net/wiki/Damage#Generation_V_onward
     def battle(self) -> Damage:
         "Uses the formulas from the above URL to calc min/max damage"
+        damage = 0
         if self.attacking.move.kind == self.PHYSCIAL_ATTACK:
             damage = (
                 (
