@@ -104,12 +104,12 @@ class EVs(BaseStats):
 @dataclass
 class IVs(BaseStats):
     # all ivs can have values between 0 - 31
-    hp: int = 31
-    attack: int = 31
-    defense: int = 31
-    special_attack: int = 31
-    special_defense: int = 31
-    speed: int = 31
+    hp: int = 0
+    attack: int = 0
+    defense: int = 0
+    special_attack: int = 0
+    special_defense: int = 0
+    speed: int = 0
 
     @property
     def max_total_value(self):
